@@ -43,13 +43,15 @@ ENV MAVEN_OPTS "-Xms2g -Xmx2g"
 # RUN export MAVEN_OPTS="-Xms2g -Xmx2g"
 
 # Remove -DskipTests if unit tests are to be included
-RUN mvn clean install -DskipTests -Pdist,embedded-cassandra-solr -f ./atlas/pom.xml
+RUN mvn clean install -DskipTests -Pdist,embedded-hbase-solr -f ./atlas/pom.xml
 RUN mkdir -p atlas-bin
 RUN tar xzf /root/atlas/distro/target/*bin.tar.gz --strip-components 1 -C /root/atlas-bin
 
+COPY "hbase-site.xml" /root/atlas-bin/hbase/conf
+
 # Set env variables, add it to the path, and start Atlas.
-ENV MANAGE_LOCAL_SOLR true
-ENV MANAGE_LOCAL_CASSANDRA true
+ENV MANAGE_LOCAL_SOLR false
+ENV MANAGE_LOCAL_CASSANDRA false
 ENV PATH /root/atlas-bin/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 EXPOSE 21000
